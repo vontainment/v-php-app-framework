@@ -31,6 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["logout"])) {
     exit();
 }
 
+if (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
+    appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
+    header('Location: ' . ($loggedIn ? '/home' : '/login'));
+    exit();
+}
+
 if ((($_SERVER['REQUEST_METHOD'] === 'GET') || ($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
     $page = $_GET['page'];
     appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
@@ -60,10 +66,4 @@ if ((($_SERVER['REQUEST_METHOD'] === 'GET') || ($_SERVER['REQUEST_METHOD'] === '
         appLog("Found page file: " . $pageFile, 2);
         $pageOutput = $pageFile;
     }
-}
-
-if (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
-    appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
-    header('Location: ' . ($loggedIn ? '/home' : '/login'));
-    exit();
 }

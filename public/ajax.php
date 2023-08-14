@@ -11,7 +11,7 @@
 session_start();
 require_once '../config.php';
 require_once '../lib/common-lib.php';
-require_once '../lib/status-lib.php';
+require_once '../lib/ajax-lib.php';
 
 if (isset($_POST['SUBMITNAME'])) {
 

@@ -35,20 +35,6 @@ function hashPassword($password)
     return $hashedPassword;
 }
 
-function appLog($message, $level)
-{
-    // Check DEBUG level
-    if (defined('DEBUG') && DEBUG >= $level) {
-        // Log the message
-        $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
-        $dateTime = date('Y-m-d H:i:s');
-        $logMessage = "[{$dateTime}] [User: {$username}] [Log Level {$level}]: {$message}\n";
-
-        // Write the log message to a file
-        error_log($logMessage, 3, '../storage/logs/error.log');
-    }
-}
-
 function sanitize_input($data)
 {
     // Trim whitespace and remove HTML tags
@@ -114,4 +100,18 @@ function is_blacklisted($ip)
         }
     }
     return false;
+}
+
+function appLog($message, $level)
+{
+    // Check DEBUG level
+    if (defined('DEBUG') && DEBUG >= $level) {
+        // Log the message
+        $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
+        $dateTime = date('Y-m-d H:i:s');
+        $logMessage = "[{$dateTime}] [User: {$username}] [Log Level {$level}]: {$message}\n";
+
+        // Write the log message to a file
+        error_log($logMessage, 3, '../storage/logs/error.log');
+    }
 }

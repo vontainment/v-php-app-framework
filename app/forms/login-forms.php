@@ -8,7 +8,7 @@
  * Description: A Simple PHP App Framework for Building Secure Apps
  */
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     appLog("POST request received.", 2);
     if (isset($_POST["login"]) && isset($_POST['username']) && isset($_POST['password'])) {
         appLog("Login form POST fields received.", 2);
@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             appLog("Username matches and password verified.", 2);
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $username;
+            $_SESSION['email'] = $userInfo['email']; // set email to session
+            $_SESSION['admin'] = $userInfo['admin']; // set admin to session
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $_SESSION['timeout'] = time();
             session_regenerate_id(true);
@@ -33,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Failed login
             $ip = $_SERVER['REMOTE_ADDR'];
+            update_failed_attempts($ip);
+            $error_msg = "Invalid username or password.";
             appLog("Failed login from IP: " . $ip, 1);
         }
     }
