@@ -21,6 +21,18 @@ function getUserInfo($username)
     }
 }
 
+function updateUserInfo($username, $updatedInfo) {
+    $filePath = USERS_DIR . "/{$username}.json"; // Make sure to use the appropriate extension
+    if (file_exists($filePath)) {
+        // Update the user's information
+        file_put_contents($filePath, json_encode($updatedInfo));
+        return true; // Successfully updated
+    } else {
+        return false; // File not found
+    }
+}
+
+
 function verifyPassword($password, $hashedPassword)
 {
     return password_verify($password, $hashedPassword);
