@@ -22,60 +22,56 @@ if (is_blacklisted($ip)) {
     http_response_code(403); // Optional: Set HTTP status code to 403 Forbidden
     echo "Your IP address has been blacklisted. If you believe this is an error, please contact us.";
     exit();
-}
-
-if (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
+} elseif (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
     appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
     header('Location: ' . ($loggedIn ? '/home' : '/login'));
     exit();
-}
+} else {
+    if ((($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
+        $page = $_GET['page'];
+        appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["logout"])) {
-    appLog("Logout request received.", 2);
-    session_destroy();
-    header("Location: /login");
-    exit();
-}
+        if (isset($_POST["logout"])) {
+            appLog("Logout request received.", 2);
+            session_destroy();
+            header("Location: /login");
+            exit();
+        }
 
-if ((($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
-    $page = $_GET['page'];
-    appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
+        // Check if $page-helper.php exists
+        $helperFile = "../app/helpers/" . $page . "-helper.php";
+        if (file_exists($helperFile)) {
+            appLog("Including helper file: " . $helperFile, 2);
+            require_once($helperFile);
+        }
 
-    // Check if $page-helper.php exists
-    $helperFile = "../app/helpers/" . $page . "-helper.php";
-    if (file_exists($helperFile)) {
-        appLog("Including helper file: " . $helperFile, 2);
-        require_once($helperFile);
-    }
+        // Check if $page-forms.php exists
+        $formsFile = "../app/forms/" . $page . "-forms.php";
+        if (file_exists($formsFile)) {
+            appLog("Including forms file: " . $formsFile, 2);
+            require_once($formsFile);
+        }
+    } elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['page'])) {
+        $page = $_GET['page'];
+        appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
 
-    // Check if $page-forms.php exists
-    $formsFile = "../app/forms/" . $page . "-forms.php";
-    if (file_exists($formsFile)) {
-        appLog("Including forms file: " . $formsFile, 2);
-        require_once($formsFile);
-    }
-}
+        $pageJs = "assets/js/" . $page . "-scripts.js";
+        if (file_exists($pageJs)) {
+            appLog("Found JavaScript file: " . $pageJs, 2);
+            $pageJsOutput = "<script src='/assets/js/{$page}-scripts.js'></script>";
+        }
 
-if (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['page'])) {
-    $page = $_GET['page'];
-    appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
+        // Check if $page-helper.php exists
+        $helperFile = "../app/helpers/" . $page . "-helper.php";
+        if (file_exists($helperFile)) {
+            appLog("Including helper file: " . $helperFile, 2);
+            require_once($helperFile);
+        }
 
-    $pageJs = "assets/js/" . $page . "-scripts.js";
-    if (file_exists($pageJs)) {
-        appLog("Found JavaScript file: " . $pageJs, 2);
-        $pageJsOutput = "<script src='/assets/js/{$page}-scripts.js'></script>";
-    }
-
-    // Check if $page-helper.php exists
-    $helperFile = "../app/helpers/" . $page . "-helper.php";
-    if (file_exists($helperFile)) {
-        appLog("Including helper file: " . $helperFile, 2);
-        require_once($helperFile);
-    }
-
-    $pageFile = "../app/pages/" . $page . ".php";
-    if (file_exists($pageFile)) {
-        appLog("Found page file: " . $pageFile, 2);
-        $pageOutput = $pageFile;
+        $pageFile = "../app/pages/" . $page . ".php";
+        if (file_exists($pageFile)) {
+            appLog("Found page file: " . $pageFile, 2);
+            $pageOutput = $pageFile;
+        }
     }
 }
