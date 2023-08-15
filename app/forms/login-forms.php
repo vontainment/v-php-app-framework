@@ -8,12 +8,12 @@
  * Description: A Simple PHP App Framework for Building Secure Apps
  */
 
- if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     appLog("POST request received.", 2);
     if (isset($_POST["login"]) && isset($_POST['username']) && isset($_POST['password'])) {
         appLog("Login form POST fields received.", 2);
-        $username = sanitize_input($_POST['username']);
-        $password = sanitize_input($_POST['password']);
+        $username = sanitizeInput($_POST['username']);
+        $password = sanitizeInput($_POST['password']);
 
         // Get user info
         $userInfo = getUserInfo($username); // use the sanitized username

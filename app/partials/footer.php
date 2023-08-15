@@ -20,7 +20,6 @@ if (!$isLoginPage) {
     if (isset($pageJsOutput)) {
         echo $pageJsOutput;
     }
-    include '../lib/support-lib.php';
 }
 
 ?>

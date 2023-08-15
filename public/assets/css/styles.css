@@ -101,6 +101,26 @@ footer {
   margin-bottom: 70px;
 }
 
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: #ffffff;
+}
+
+.update-users-form,
+.add-users-form {
+  width: 48%; /* Adjust as needed */
+  box-sizing: border-box;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+#submit-update-user {
+float: left;
+margin-right: 40px;
+}
+
 .footer-text {
   margin: 0;
 }
@@ -152,17 +172,23 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-textarea,
-select,
-input[type="text" i],
-input[type="password" i] {
+label,
+input,
+select {
   display: block;
-  padding: 8px 6px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  width: 97%;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+  width: 100%;
+  padding: 10px;
   border: 1px solid #66cc33;
+  border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 input[type="submit" i] {

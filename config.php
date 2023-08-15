@@ -11,6 +11,9 @@
 define('BASE_DIR', dirname($_SERVER['DOCUMENT_ROOT']));
 define('BLACKLIST_DIR', BASE_DIR . '/storage');
 define('LOG_DIR', BASE_DIR . '/storage/logs');
+define('USERS_DIR', BASE_DIR . '/storage/users');
+
+define('CREATE_ADMIN', true);
 
 // Set logging level
 define('DEBUG', 2);  // change to 2 for development, 1 for production, or 0 to turn off

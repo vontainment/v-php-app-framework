@@ -2,10 +2,11 @@
     RESPONSIVE STYLES
 ================================================ */
 @media (max-width: 768px) {
-
-  /* General Styles */
   body {
     margin: 0 0 70px;
   }
-
+  .update-users-box,
+  .add-users-form {
+    width: 100%;
+  }
 }
