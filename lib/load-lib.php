@@ -24,16 +24,16 @@ if (is_blacklisted($ip)) {
     exit();
 }
 
+if (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
+    appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
+    header('Location: ' . ($loggedIn ? '/home' : '/login'));
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["logout"])) {
     appLog("Logout request received.", 2);
     session_destroy();
     header("Location: /login");
-    exit();
-}
-
-if (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
-    appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
-    header('Location: ' . ($loggedIn ? '/home' : '/login'));
     exit();
 }
 
