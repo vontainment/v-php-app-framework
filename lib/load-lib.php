@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["logout"])) {
     exit();
 }
 
-if ((($_SERVER['REQUEST_METHOD'] === 'GET') || ($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
+if ((($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
     $page = $_GET['page'];
     appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
 
@@ -54,11 +54,23 @@ if ((($_SERVER['REQUEST_METHOD'] === 'GET') || ($_SERVER['REQUEST_METHOD'] === '
         appLog("Including forms file: " . $formsFile, 2);
         require_once($formsFile);
     }
+}
+
+if (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['page'])) {
+    $page = $_GET['page'];
+    appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
 
     $pageJs = "assets/js/" . $page . "-scripts.js";
     if (file_exists($pageJs)) {
         appLog("Found JavaScript file: " . $pageJs, 2);
         $pageJsOutput = "<script src='/assets/js/{$page}-scripts.js'></script>";
+    }
+
+    // Check if $page-helper.php exists
+    $helperFile = "../app/helpers/" . $page . "-helper.php";
+    if (file_exists($helperFile)) {
+        appLog("Including helper file: " . $helperFile, 2);
+        require_once($helperFile);
     }
 
     $pageFile = "../app/pages/" . $page . ".php";

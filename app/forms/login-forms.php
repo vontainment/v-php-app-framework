@@ -10,7 +10,7 @@
 
  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     appLog("POST request received.", 2);
-    if (isset($_POST["login"]) && isset($_POST['username']) && isset($_POST['password'])) {
+    if (isset($_POST["login"])) {
         appLog("Login form POST fields received.", 2);
         $username = sanitizeInput($_POST['username']);
         $password = sanitizeInput($_POST['password']);
