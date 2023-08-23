@@ -14,11 +14,11 @@ A Simple PHP App Framework for Building Secure Apps. Designed to be easier than 
 - helpers (Contains the backend page code)
 - partials (Header, footer, nav)
 
-### lib (Core app logic, routing, common functions, security)
+### Lib (Core app logic, routing, common functions, security)
 - common-lib.php (Common functions)
 - load-lib.php (Core code to route and render)
 
-### public (Webroot)
+### Public (Webroot)
 - assets (Css, js, img)
   - images
   - js
@@ -27,12 +27,12 @@ A Simple PHP App Framework for Building Secure Apps. Designed to be easier than 
 - actions.php (Actions entry file)
 - api.php (API entry file)
 
-### storage (File storage)
+### Storage (File storage)
 - logs
 - users
 - BLACKLIST.json
 
-### config.php (Constants)
+### Config.php (Constants)
 
 ## Features
 - Automatic sanitization and validation on POST and GET requests.
@@ -40,20 +40,20 @@ A Simple PHP App Framework for Building Secure Apps. Designed to be easier than 
 
 ## How To
 - Forms:
-'''
+~~~
 <form action="/action.php" method="POST">
     <input type="hidden" name="action" value="login">
-'''
+~~~
 
 This routes the form submission to /app/actions/post/login.php, actions.php handles basic sanitization and validation.
 
 - Logging:
 Logging can be defined as debug or production in config.php, 1 is production, 2 is debug.
 
-'''
-    appLog("Attempted direct access to actions.php.", 1);
-'''
+~~~
+appLog("Attempted direct access to actions.php.", 1);
+~~~
 or
-'''
-    appLog("Attempted direct access to actions.php.", 2);
-'''
+~~~
+appLog("Attempted direct access to actions.php.", 2);
+~~~
