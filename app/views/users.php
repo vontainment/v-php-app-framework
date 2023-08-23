@@ -7,8 +7,6 @@
  * File: users.php
  * Description: A Simple PHP App Framework for Building Secure Apps
 */
-
-include '../app/partials/nav.php';
 ?>
 
 <div class="content">
