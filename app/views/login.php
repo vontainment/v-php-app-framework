@@ -12,12 +12,13 @@
 <div class="login-box">
     <img src="assets/images/logo.png" alt="Logo" class="logo">
     <h2>AI Status Admin</h2>
-    <form class="login-form" action="/login" method="POST">
+    <form class="login-form" action="/action.php" method="POST">
+        <input type="hidden" name="action" value="login">
         <label>Username:</label>
         <input type="text" name="username"><br><br>
         <label>Password:</label>
         <input type="password" name="password"><br><br>
-        <button type="submit" class="green-button" name="login">Log In</button>
+        <button type="submit" class="green-button">Log In</button>
     </form>
     <?php if (isset($error_msg)) : ?>
         <div id="error-msg"><?php echo $error_msg; ?></div>

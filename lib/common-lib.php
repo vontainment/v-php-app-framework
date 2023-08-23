@@ -4,16 +4,15 @@
  * Version: 1.0.0
  * Author: Vontainment
  * URL: https://vontainment.com
- * File: log-lib.php
- * Description: A Simple PHP App Framework for Building Secure Apps
+ * File: common-lib.php
+ * Description: This file contains a set of utility functions for the project.
  */
 
 /**
- * Retrieves user information from the user file.
- *
- * @param string $username User's name
- *
- * @return array|null Array with user information or null if user does not exists
+ * Retrieves user information based on a given username.
+ * Returns null if the user doesn't exist.
+ * @param string $username The username of the user.
+ * @return array|NULL The user's data if exists, otherwise NULL.
  */
 function getUserInfo($username)
 {
@@ -28,10 +27,10 @@ function getUserInfo($username)
 }
 
 /**
- * Logs a message into a file if the DEBUG level is equal to or higher than $level.
+ * Logs messages in the system with a specific level.
  *
- * @param string $message The log message
- * @param int $level The log level
+ * @param string $message The message to be logged.
+ * @param string $level The level of the log entry.
  */
 function appLog($message, $level)
 {
@@ -39,14 +38,15 @@ function appLog($message, $level)
         $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
         $dateTime = date('Y-m-d H:i:s');
         $logMessage = "[{$dateTime}] [User: {$username}] [Log Level {$level}]: {$message}\n";
-        error_log($logMessage, 3, '../storage/logs/error.log');
+        error_log($logMessage, 3, LOG_DIR . '/error.log');
     }
 }
 
 /**
- * Updates the number of failed attempts for an IP address. If failed attempts >= 3, blacklist the IP.
+ * Increases failed login attempts from a particular IP.
+ * If attempts are 3 or more, it marks the IP as blacklisted.
  *
- * @param string $ip IP address to update failed attempts for
+ * @param string $ip The IP address to update.
  */
 function update_failed_attempts($ip)
 {
@@ -67,12 +67,12 @@ function update_failed_attempts($ip)
 }
 
 /**
- * Checks if an IP address is blacklisted. If blacklisted more than 3 days ago, unblacklist.
+ * Checks if a given IP is blacklisted.
+ * If IP was blacklisted more than 3 days ago, removes it from blacklists.
  *
- * @param string $ip IP address to check
- * @return boolean Returns true if blacklisted, else false
- */
-function is_blacklisted($ip)
+ * @param string $ip The IP address to check.
+ * @return bool True if the IP is blacklisted, otherwise false.
+ */ function is_blacklisted($ip)
 {
     $blacklist_file = BLACKLIST_DIR . "/BLACKLIST.json";
     $blacklist = json_decode(file_get_contents($blacklist_file), true);
@@ -87,35 +87,54 @@ function is_blacklisted($ip)
     }
     return false;
 }
-function processFormInput($inputData)
+
+/**
+ * Sanitizes input data to prevent XSS attacks.
+ *
+ * @param mixed $data The input data to sanitize.
+ * @return string The sanitized input data.
+ */
+function sanitizeInput($data)
 {
-    foreach ($inputData as $key => $datatype) {
-        if (!isset($_POST[$key])) return false; // Return false if key is not set
+    $data = stripslashes(trim(strip_tags($data)));
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8', false);
+    $data = preg_replace('/<\?(?:php|=)?|<%|<script|<\/script|\/bin\/sh|exec\(|system\(|passthru\(|shell_exec\(|phpinfo\(|eval\(|base64_decode\(|gzinflate\(|preg_replace\(|str_rot13\(|assert\(/i', '', $data);
+    return $data;
+}
 
-        // Sanitize the input
-        $data = stripslashes(trim(strip_tags($_POST[$key])));
-        $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8', false);
-        $data = preg_replace('/<\?(?:php|=)?|<%|<script|<\/script|\/bin\/sh|exec\(|system\(|passthru\(|shell_exec\(|phpinfo\(|eval\(|base64_decode\(|gzinflate\(|preg_replace\(|str_rot13\(|assert\(/i', '', $data);
-
-        // Validate the input based on the datatype
-        $isValid = true; // Assume valid by default
-        switch ($datatype) {
-            case 'email':
-                $isValid = filter_var($data, FILTER_VALIDATE_EMAIL) !== false;
-                break;
-            case 'username':
-                $isValid = preg_match("/^[a-zA-Z0-9]{5,14}$/", $data);
-                break;
-            case 'password':
-                $isValid = preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,24}$/", $data);
-                break;
-                // Add other cases here
-        }
-
-        if (!$isValid) return false; // Return false if validation fails
-
-        $_POST[$key] = $data; // Optionally update the POST data with the sanitized value
+/**
+ * Validates input values based on the input key.
+ * Currently supports 'username', 'password', and 'admin'.
+ *
+ * @param string $key The key of the input data.
+ * @param mixed $value The value of the input data.
+ * @return mixed|bool The original value if validation passes, false otherwise.
+ */
+function validateInput($key, $value)
+{
+    switch ($key) {
+        case 'username':
+            // Perform username validation here
+            if (!preg_match("/^[a-zA-Z0-9_]+$/", $value)) {
+                return false;
+            }
+            break;
+        case 'password':
+            // Perform password validation here
+            if (strlen($value) < 8) {
+                return false;
+            }
+            break;
+        case 'admin':
+            // Perform admin validation here
+            if ($value !== 'true' && $value !== 'false') {
+                return false;
+            }
+            break;
+            // Add more cases for other fields as needed
+        default:
+            // Default validation or no validation, return the value
+            return $value;
     }
-
-    return $_POST; // Return the sanitized and validated form variables
+    return $value;
 }

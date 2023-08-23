@@ -17,8 +17,9 @@ include '../app/partials/nav.php';
     <?php endif; ?>
     <div class="update-users-form">
         <h3>Update User</h3>
-        <form action="/users" method="POST" id="update-user-form">
+        <form id="update-user-form" action="/action.php" method="POST">
             <label for="users">Select User:</label>
+            <input type="hidden" name="action" value="update_user">
             <select id="users" name="username" onchange="populateForm()">
                 <option value="">Select a user</option>
                 <?php foreach ($usersData as $userData) : ?>
@@ -37,17 +38,18 @@ include '../app/partials/nav.php';
                 <option value="true">Yes</option>
             </select>
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="green-button" id="submit-update-user" name="updateUserInfo">Update User</button>
+            <button type="submit" class="green-button" id="submit-update-user">Update User</button>
         </form>
-        <form action="/users" method="POST" id="delete-user-form">
-            <input type="hidden" name="delete-username" id="delete-username">
-            <button type="submit" class="red-button" id="submit-delete-user" name="deleteUserInfo">Delete User</button>
+        <form id="delete-user-form" action="/action.php" method="POST">
+            <input type="hidden" name="action" value="delete-user">
+            <button type="submit" class="red-button" id="submit-delete-user">Delete User</button>
         </form>
     </div>
 
     <div class="add-users-form">
         <h3>Add User</h3>
-        <form action="/users" method="POST">
+        <form id="add-user-form" action="/action.php" method="POST">
+            <input type="hidden" name="action" value="add_user">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required>
             <label for="password">Password:</label>
@@ -60,7 +62,7 @@ include '../app/partials/nav.php';
                 <option value="true">Yes</option>
             </select>
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="green-button" id="submit-add-user" name="addUserInfo">Add User</button>
+            <button type="submit" class="green-button" id="submit-add-user">Add User</button>
         </form>
     </div>
 </div>

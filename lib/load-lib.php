@@ -5,73 +5,48 @@
  * Author: Vontainment
  * URL: https://vontainment.com
  * File: load-lib.php
- * Description: A Simple PHP App Framework for Building Secure Apps
+ * Description: This is a part of a simple app framework that's designed to help build secure web applications.
  */
 
-$ip = $_SERVER['REMOTE_ADDR'];
-$loggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
-$isLoginPage = strpos($_SERVER['REQUEST_URI'], '/login') !== false;
-
-appLog("Is Login Page: " . ($isLoginPage ? "True" : "False"), 2);
-appLog("IP: " . $ip, 2);
-appLog("Logged In: " . ($loggedIn ? "True" : "False"), 2);
-
-if (is_blacklisted($ip)) {
-    // Stop the script and show an error if the IP is blacklisted
-    appLog("IP is blacklisted.", 1);
-    http_response_code(403); // Optional: Set HTTP status code to 403 Forbidden
-    echo "Your IP address has been blacklisted. If you believe this is an error, please contact us.";
+// First, we check if the IP of the user is blacklisted.
+if (is_blacklisted(IP)) {
+    // If the user is blacklisted, we stop the script immediately and send a 403 response.
+    http_response_code(403);
+    appLog("Blacklisted the following IP: " . IP, 1); // Logs the blacklisted IP
     exit();
-} elseif (($isLoginPage && $loggedIn) || (!$isLoginPage && !$loggedIn)) {
-    appLog("Redirecting to: " . ($loggedIn ? "/home" : "/login"), 2);
-    header('Location: ' . ($loggedIn ? '/home' : '/login'));
+
+// In case the view requested is 'login' and the user's session shows they're already logged in
+} elseif (VIEW === 'login' && isset($_SESSION['logged_in'])) {
+    // Since the user is logged in there is no need to go to the 'login' view, redirect them to the 'home' view.
+    appLog("Redirect to home view if the user is already logged in.", 2); // Logs the redirection
+    header('Location: /home');
+    exit();
+
+// Here, we're checking if the view is anything other than 'login' and the user isn't logged in
+} elseif (VIEW !== 'login' && !isset($_SESSION['logged_in'])) {
+    // We redirect these users to the 'login' view
+    appLog("Redirect to login view if not logged in.", 2); // Logs the redirection
+    header('Location: /login');
     exit();
 } else {
-    if ((($_SERVER['REQUEST_METHOD'] === 'POST')) && isset($_GET['page'])) {
-        $page = $_GET['page'];
-        appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
+    // For any other case, we begin constructing the view.
+    appLog("Constructing view.", 2);
 
-        if (isset($_POST["logout"])) {
-            appLog("Logout request received.", 2);
-            session_destroy();
-            header("Location: /login");
-            exit();
-        }
+    // Each value in the POST array is escaped to fend off attacks like XSS.
+    foreach ($_POST as $postvalue => $value) {
+        $_POST[$postvalue] = sanitizeInput($value);
+    }
 
-        // Check if $page-helper.php exists
-        $helperFile = "../app/helpers/" . $page . "-helper.php";
-        if (file_exists($helperFile)) {
-            appLog("Including helper file: " . $helperFile, 2);
-            require_once($helperFile);
-        }
+    // Check if the view file exists; if not, provide an error file.
+    if (file_exists(VIEW_FILE)) {
+        $viewOutput = VIEW_FILE;
+    } else {
+        appLog("View does not exist.", 2); // Logs the error
+        $viewOutput = ERROR_FILE;
+    }
 
-        // Check if $page-forms.php exists
-        $formsFile = "../app/forms/" . $page . "-forms.php";
-        if (file_exists($formsFile)) {
-            appLog("Including forms file: " . $formsFile, 2);
-            require_once($formsFile);
-        }
-    } elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['page'])) {
-        $page = $_GET['page'];
-        appLog("Processing " . $_SERVER['REQUEST_METHOD'] . " request for page: " . $page, 2);
-
-        $pageJs = "assets/js/" . $page . "-scripts.js";
-        if (file_exists($pageJs)) {
-            appLog("Found JavaScript file: " . $pageJs, 2);
-            $pageJsOutput = "<script src='/assets/js/{$page}-scripts.js'></script>";
-        }
-
-        // Check if $page-helper.php exists
-        $helperFile = "../app/helpers/" . $page . "-helper.php";
-        if (file_exists($helperFile)) {
-            appLog("Including helper file: " . $helperFile, 2);
-            require_once($helperFile);
-        }
-
-        $pageFile = "../app/pages/" . $page . ".php";
-        if (file_exists($pageFile)) {
-            appLog("Found page file: " . $pageFile, 2);
-            $pageOutput = $pageFile;
-        }
+    // We have helper functionality separately coded. If the helper file exists, bring it in.
+    if (file_exists(HELPER_FILE)) {
+        require_once(HELPER_FILE);
     }
 }

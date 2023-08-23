@@ -15,10 +15,10 @@
 
 <?php
 
-if (!$isLoginPage) {
+if (!$isLoginView) {
     echo "<script src='/assets/js/footer-scripts.js'></script>";
-    if (isset($pageJsOutput)) {
-        echo $pageJsOutput;
+    if (isset($viewJsOutput)) {
+        echo $viewJsOutput;
     }
 }
 

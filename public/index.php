@@ -8,23 +8,28 @@
  * Description: A Simple PHP App Framework for Building Secure Apps
  */
 
-// Start a new session or resume an existing session.
-// This is used for managing information across different pages of the website
+// Initializes a new session, or resumes an existing one
 session_start();
 
-// Include the config file, which contains configurations settings for the application
+// Incorporates the settings and configurations defined in the config.php file
 require_once '../config.php';
 
+// Incorporates functionalities defined in the common-lib.php file. Common operations are defined here
 require_once '../lib/common-lib.php';
 
-// Include the load library, which contains functions for loading different components
+// Incorporates functionalities defined in the load-lib.php file. Loading operations are defined here
 require_once '../lib/load-lib.php';
 
-// Include the header part of the web page
+// Incorporates the header section of the view from the header.php file
 require_once '../app/partials/header.php';
 
-// Include the main content part of the web page
-require_once '../app/partials/content.php';
+// Checks if the user is not on the login view. If true, then it incorporates the navigation bar view from the navigation.php file
+if (VIEW !== 'login') {
+    require_once '../app/partials/navigation.php';
+}
 
-// Include the footer part of the web page
+// Incorporates the main view output defined in the file specified by the $viewOutput variable
+require_once $viewOutput;
+
+// Incorporates the footer section of the view from the footer.php file
 require_once '../app/partials/footer.php';
