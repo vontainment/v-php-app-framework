@@ -4,6 +4,8 @@
 
 A Simple PHP App Framework for Building Secure Apps. Designed to be easier than traditional MVC frameworks, because any developer who says they can jump into a random codebase built with MVC and not be lost at first is likely exaggerating. This framework is based on API, Actions, Views, Helpers, and Libs.
 
+The idea is to split the code into Core logic and functions (libs), page rendering and logic/functions (views/helpers), post/get logic/functions (api/actions).
+
 ### App (Contains core code)
 
 - actions (Directs form input)
@@ -88,7 +90,7 @@ exit();
 ```
 
 - 404 Errors
-  Create a file /lib/404-lib.php
+Create a file /lib/404-lib.php
 
 - Automatic sanitization and validation on POST and sanitization on GET requests:
   These are very basic and just prevent the general issues. The sanitization should stript out most dangerous input but should not cause issues with most usages.
