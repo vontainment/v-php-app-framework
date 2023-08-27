@@ -10,12 +10,10 @@
 ?>
 
 <div class="content">
-    <?php if (isset($error_msg)) : ?>
-        <div id="error-msg"><?php echo $error_msg; ?></div>
-    <?php endif; ?>
+    <?php display_error_msg(); ?>
     <div class="update-users-form">
         <h3>Update User</h3>
-        <form id="update-user-form" action="/action.php" method="POST">
+        <form id="update-user-form" action="/action/post" method="POST">
             <label for="users">Select User:</label>
             <input type="hidden" name="action" value="update_user">
             <select id="users" name="username" onchange="populateForm()">
@@ -36,17 +34,17 @@
                 <option value="true">Yes</option>
             </select>
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="green-button" id="submit-update-user">Update User</button>
+            <button type="submit" class="green" id="submit-update-user">Update User</button>
         </form>
-        <form id="delete-user-form" action="/action.php" method="POST">
+        <form id="delete-user-form" action="/action/post" method="POST">
             <input type="hidden" name="action" value="delete-user">
-            <button type="submit" class="red-button" id="submit-delete-user">Delete User</button>
+            <button type="submit" class="red" id="submit-delete-user">Delete User</button>
         </form>
     </div>
 
     <div class="add-users-form">
         <h3>Add User</h3>
-        <form id="add-user-form" action="/action.php" method="POST">
+        <form id="add-user-form" action="/action/post" method="POST">
             <input type="hidden" name="action" value="add_user">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required>
@@ -60,7 +58,7 @@
                 <option value="true">Yes</option>
             </select>
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="green-button" id="submit-add-user">Add User</button>
+            <button type="submit" class="green" id="submit-add-user">Add User</button>
         </form>
     </div>
 </div>

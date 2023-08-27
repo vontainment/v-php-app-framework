@@ -7,7 +7,3 @@
  * File: home.php
  * Description: A Simple PHP App Framework for Building Secure Apps
 */
-
-include '../app/partials/nav.php';
-
-?>

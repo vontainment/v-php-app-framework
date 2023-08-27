@@ -1,19 +1,24 @@
 <?php
 /*
  * Project: Simple App Framework
- * Version: 10.0
+ * Version: 1.0.0
  * Author Vontainment
  * URL: https://vontainment.com
  * File: users-helper.php
- * Description: A Simple PHP App Framework for Building Secure Apps
- *
- * This script contains a function `selectUserInfo()` which populates an array with
+ * Description: This script contains a function `selectUserInfo()` which populates an array with
  * user data obtained from JSON files within a specified directory.
  * Each array element contains a `username` and `dataAttributes` for the user.
  * `dataAttributes` are a string includes encoded or escaped values related to
  * each user such as `username`, `password`, `email`, and `admin` status.
 */
 
+/**
+ * Updates user information in a file based on a given username.
+ *
+ * @param string $username The username of the user.
+ * @param array $updatedInfo The updated information of the user.
+ * @return bool Returns true if update is successful, false otherwise.
+ */
 function updateUserInfo($username, $updatedInfo)
 {
     $filePath = USERS_DIR . "/{$username}";
@@ -25,6 +30,13 @@ function updateUserInfo($username, $updatedInfo)
     }
 }
 
+/**
+ * Adds user information to a new file based on a given username.
+ *
+ * @param string $username The username of the user.
+ * @param array $userInfo The information of the user.
+ * @return bool Returns true if addition is successful, false otherwise.
+ */
 function addUserInfo($username, $userInfo)
 {
     $filePath = USERS_DIR . "/{$username}";
@@ -36,6 +48,13 @@ function addUserInfo($username, $userInfo)
     }
 }
 
+/**
+ * Adds user information to a new file based on a given username.
+ *
+ * @param string $username The username of the user.
+ * @param array $userInfo The information of the user.
+ * @return bool Returns true if addition is successful, false otherwise.
+ */
 function deleteUserInfo($username)
 {
     $filePath = USERS_DIR . "/{$username}";
@@ -47,6 +66,11 @@ function deleteUserInfo($username)
     }
 }
 
+/**
+ * Selects user information from all files in a specific directory and returns it as an array.
+ *
+ * @return array An array of associative arrays containing 'username' and 'dataAttributes'.
+ */
 function selectUserInfo()
 {
     $userFiles = glob(USERS_DIR . "/*");

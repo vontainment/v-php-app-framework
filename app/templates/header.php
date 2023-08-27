@@ -1,11 +1,11 @@
 <?php
 /*
- * Project: WP Update API
- * Version: 2.0.0
- * Author: Vontainment
+ * Project: Simple App Framework
+ * Version: 1.0.0
+ * Author Vontainment
  * URL: https://vontainment.com
  * File: header.php
- * Description: WordPress Update API
+ * Description: A Simple PHP App Framework for Building Secure Apps
 */
 ?>
 
@@ -16,11 +16,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <meta name="robots" content="noindex, nofollow">
-    <title>API Admin Page</title>
+    <title>APP</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js"></script>
     <script src="/assets/js/header-scripts.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="stylesheet" href="/assets/css/typography.css">
     <link rel="stylesheet" href="/assets/css/responsive.css">
@@ -34,7 +32,7 @@
 </head>
 
 <body>
-    <?php if (PAGE !== 'login') : ?>
+    <?php if (VIEW !== 'login') : ?>
         <header>
             <div class="logo">
                 <a href="/home">
@@ -49,9 +47,7 @@
             </div>
         </header>
         <div class="tab">
-            <a href="/home"><button class="tablinks <?php if (PAGE === 'home') echo 'active'; ?>">Manage Hosts</button></a>
-            <a href="/plupdate"><button class="tablinks <?php if (PAGE === 'plupdate') echo 'active'; ?>">Manage Plugins</button></a>
-            <a href="/thupdate"><button class="tablinks <?php if (PAGE === 'thupdate') echo 'active'; ?>">Manage Themes</button></a>
-            <a href="/logs"><button class="tablinks <?php if (PAGE === 'logs') echo 'active'; ?>">View Logs</button></a>
+            <a href="/home"><button class="tablinks <?php if (VIEW === 'home') echo 'active'; ?>">Dashboard</button></a>
+            <a href="/Users"><button class="tablinks <?php if (VIEW === 'users') echo 'active'; ?>">Manage Users</button></a>
         </div>
     <?php endif; ?>

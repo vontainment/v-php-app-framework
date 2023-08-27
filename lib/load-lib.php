@@ -1,11 +1,14 @@
 <?php
-/*
+
+/**
  * Project: Simple App Framework
  * Version: 1.0.0
  * Author: Vontainment
  * URL: https://vontainment.com
  * File: load-lib.php
- * Description: This is a part of a simple app framework that's designed to help build secure web applications.
+ * Description: This file is a part of the Simple App Framework, responsible for handling
+ * user IP verification, session management, view redirection based on login status,
+ * input sanitization, and view construction.
  */
 
 // First, we check if the IP of the user is blacklisted.
@@ -15,14 +18,14 @@ if (is_blacklisted(IP)) {
     appLog("Blacklisted the following IP: " . IP, 1); // Logs the blacklisted IP
     exit();
 
-// In case the view requested is 'login' and the user's session shows they're already logged in
+    // In case the view requested is 'login' and the user's session shows they're already logged in
 } elseif (VIEW === 'login' && isset($_SESSION['logged_in'])) {
     // Since the user is logged in there is no need to go to the 'login' view, redirect them to the 'home' view.
     appLog("Redirect to home view if the user is already logged in.", 2); // Logs the redirection
     header('Location: /home');
     exit();
 
-// Here, we're checking if the view is anything other than 'login' and the user isn't logged in
+    // Here, we're checking if the view is anything other than 'login' and the user isn't logged in
 } elseif (VIEW !== 'login' && !isset($_SESSION['logged_in'])) {
     // We redirect these users to the 'login' view
     appLog("Redirect to login view if not logged in.", 2); // Logs the redirection

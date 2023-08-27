@@ -1,15 +1,15 @@
 <?php
 /*
- * Project: WP Update API
- * Version: 2.0.0
- * Author: Vontainment
+ * Project: Simple App Framework
+ * Version: 1.0.0
+ * Author Vontainment
  * URL: https://vontainment.com
  * File: footer.php
- * Description: WordPress Update API
+ * Description: A Simple PHP App Framework for Building Secure Apps
 */
 ?>
 
-<?php if (PAGE !== 'login') : ?>
+<?php if (VIEW !== 'login') : ?>
     <footer>
         <p>&copy; <?php echo date("Y"); ?> Vontainment. All Rights Reserved.</p>
     </footer>

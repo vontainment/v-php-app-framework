@@ -11,6 +11,7 @@
 /**
  * Retrieves user information based on a given username.
  * Returns null if the user doesn't exist.
+ *
  * @param string $username The username of the user.
  * @return array|NULL The user's data if exists, otherwise NULL.
  */
@@ -48,6 +49,8 @@ function appLog($message, $level)
  * then it prints the error message within a div container on the webpage.
  * After that, it deletes the session error message to prevent it from
  * being displayed again on the subsequent reloads/redirects.
+ *
+ * @return void
  */
 function display_error_msg()
 {
@@ -67,6 +70,7 @@ function display_error_msg()
  * Updates the number of failed attempts for an IP address. If failed attempts >= 3, blacklist the IP.
  *
  * @param string $ip IP address to update failed attempts for
+ * @return void
  */
 function update_failed_attempts($ip)
 {
@@ -92,6 +96,12 @@ function update_failed_attempts($ip)
     }
 }
 
+/**
+ * Updates the invalid activity counter for an IP address. If the counter reaches 3, blacklist the IP.
+ *
+ * @param string $ip IP address to update invalid activity for
+ * @return void
+ */
 function update_invalid_activity($ip)
 {
     $blacklist_file = BLACKLIST_DIR . "/BLACKLIST.json";

@@ -1,15 +1,15 @@
 <?php
-/*
+
+/**
  * Project: Simple App Framework
  * Version: 1.0.0
  * Author: Vontainment
  * URL: https://vontainment.com
  * File: action.php
- * Description: This file acts as a part of a simple PHP app framework for building
- * secure apps. It includes the configuration file and common library, and validates
- * client's IP address against a blacklist. If the IP is blacklisted, an error
- * message is shown and the script stops. The file also checks and validates POST
- * and GET requests, includes corresponding action, and logs actions.
+ * Description: This file is a part of the Simple App Framework, responsible for handling
+ * HTTP requests and actions. It starts or resumes a session, includes necessary configuration
+ * files and libraries, checks whether the client's IP address is blacklisted, validates POST
+ * and GET requests, includes appropriate action files based on request type, and logs actions.
  */
 
 // The session is being started or resumed.
