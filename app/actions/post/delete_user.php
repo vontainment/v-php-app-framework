@@ -10,11 +10,8 @@
    returns feedback messages to the front end.
  */
 
-// Initiate or resume a session
-session_start();
-
 // Validate if user is logged in and has admin privileges
-if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) {
+if ($_SESSION['admin'] === true) {
 
     // Clean the data received from the POST request for security reasons
     $username = ($_POST["username"]);
@@ -35,8 +32,6 @@ if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) {
         appLog("Please select a user.", 2);  // Log that no user was selected
     }
 } else {
-    // If user is not logged in or does not have admin privileges, terminate script execution and log this incident
-    update_failed_attempts(IP);
-    appLog("Unauthorized access to delete user from IP: " . IP, 1);
-    exit();
+    // Log Suspicious activity and update failed attempts
+    update_invalid_activity(IP);
 }

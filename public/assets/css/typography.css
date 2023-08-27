@@ -1,0 +1,135 @@
+/* Fluid Typography for headings */
+h1 {
+    font-size: calc(1rem + 1vw);
+    font-weight: 700;
+}
+
+h2 {
+    font-size: calc(0.9rem + 1vw);
+    font-weight: 600;
+}
+
+h3 {
+    font-size: calc(0.8rem + 1vw);
+    font-weight: 500;
+}
+
+h4 {
+    font-size: calc(0.7rem + 0.5vw);
+    font-weight: 500;
+}
+
+h5 {
+    font-size: calc(0.6rem + 0.5vw);
+    font-weight: 400;
+}
+
+h6 {
+    font-size: calc(0.5rem + 0.5vw);
+    font-weight: 400;
+}
+
+/* Text size class for small text */
+.text-s {
+    font-size: calc(0.8rem + 0.3vw);
+}
+
+/* Text size class for large text */
+.text-l {
+    font-size: calc(1.2rem + 0.5vw);
+}
+
+/* Text size class for extra-large text */
+.text-xl {
+    font-size: calc(1.5rem + 0.7vw);
+}
+
+.text-info {
+    color: #17a2b8;
+    /* Informational text in blue */
+}
+
+.text-error {
+    color: #dc3545;
+    /* Error text in red */
+}
+
+.text-light {
+    color: #f8f9fa;
+    /* Light-colored text */
+}
+
+.text-dark {
+    color: #343a40;
+    /* Dark-colored text */
+}
+
+.text-success {
+    color: #28a745;
+    /* Success text in green */
+}
+
+.text-warning {
+    color: #ffc107;
+    /* Warning text in yellow */
+}
+
+h4 {
+    font-size: calc(0.7rem + 0.5vw);
+    font-weight: 500;
+}
+
+h5 {
+    font-size: calc(0.6rem + 0.5vw);
+    font-weight: 400;
+}
+
+h6 {
+    font-size: calc(0.5rem + 0.5vw);
+    font-weight: 400;
+}
+
+/* Text size class for small text */
+.text-s {
+    font-size: calc(0.8rem + 0.3vw);
+}
+
+/* Text size class for large text */
+.text-l {
+    font-size: calc(1.2rem + 0.5vw);
+}
+
+/* Text size class for extra-large text */
+.text-xl {
+    font-size: calc(1.5rem + 0.7vw);
+}
+
+.text-info {
+    color: #17a2b8;
+    /* Informational text in blue */
+}
+
+.text-error {
+    color: #dc3545;
+    /* Error text in red */
+}
+
+.text-light {
+    color: #f8f9fa;
+    /* Light-colored text */
+}
+
+.text-dark {
+    color: #343a40;
+    /* Dark-colored text */
+}
+
+.text-success {
+    color: #28a745;
+    /* Success text in green */
+}
+
+.text-warning {
+    color: #ffc107;
+    /* Warning text in yellow */
+}

@@ -1,0 +1,281 @@
+/* General styling */
+main {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+
+  .container {
+    width: 70%;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+  @media (max-width: 768px) {
+
+    /* Mobile screen */
+    .container {
+      width: 100%;
+    }
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+
+    /* Alignment classes */
+    .right {
+      justify-content: flex-end;
+    }
+
+    .left {
+      justify-content: flex-start;
+    }
+
+    .center {
+      justify-content: center;
+    }
+
+    .spaced {
+      justify-content: space-between;
+    }
+  }
+
+  [class*="col"] {
+    padding: 0 15px;
+    min-height: 1px;
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    /* Mobile styles */
+    @media (max-width: 767px) {
+      .s1 {
+        flex: 0 0 8.33333%;
+        max-width: 8.33333%;
+      }
+
+      .s2 {
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+      }
+
+      .s3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+      }
+
+      .s4 {
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+      }
+
+      .s5 {
+        flex: 0 0 41.66667%;
+        max-width: 41.66667%;
+      }
+
+      .s6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      .s7 {
+        flex: 0 0 58.33333%;
+        max-width: 58.33333%;
+      }
+
+      .s8 {
+        flex: 0 0 66.66667%;
+        max-width: 66.66667%;
+      }
+
+      .s9 {
+        flex: 0 0 75%;
+        max-width: 75%;
+      }
+
+      .s10 {
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+      }
+
+      .s11 {
+        flex: 0 0 91.66667%;
+        max-width: 91.66667%;
+      }
+
+      .s12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* Tablet styles */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .m1 {
+        flex: 0 0 8.33333%;
+        max-width: 8.33333%;
+      }
+
+      .m2 {
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+      }
+
+      .m3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+      }
+
+      .m4 {
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+      }
+
+      .m5 {
+        flex: 0 0 41.66667%;
+        max-width: 41.66667%;
+      }
+
+      .m6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      .m7 {
+        flex: 0 0 58.33333%;
+        max-width: 58.33333%;
+      }
+
+      .m8 {
+        flex: 0 0 66.66667%;
+        max-width: 66.66667%;
+      }
+
+      .m9 {
+        flex: 0 0 75%;
+        max-width: 75%;
+      }
+
+      .m10 {
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+      }
+
+      .m11 {
+        flex: 0 0 91.66667%;
+        max-width: 91.66667%;
+      }
+
+      .m12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 1024px) {
+      .l1 {
+        flex: 0 0 8.33333%;
+        max-width: 8.33333%;
+      }
+
+      .l2 {
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+      }
+
+      .l3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+      }
+
+      .l4 {
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+      }
+
+      .l5 {
+        flex: 0 0 41.66667%;
+        max-width: 41.66667%;
+      }
+
+      .l6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      .l7 {
+        flex: 0 0 58.33333%;
+        max-width: 58.33333%;
+      }
+
+      .l8 {
+        flex: 0 0 66.66667%;
+        max-width: 66.66667%;
+      }
+
+      .l9 {
+        flex: 0 0 75%;
+        max-width: 75%;
+      }
+
+      .l10 {
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+      }
+
+      .l11 {
+        flex: 0 0 91.66667%;
+        max-width: 91.66667%;
+      }
+
+      .l12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+
+    .form-col-12, .form-col-6, .form-col-4 {
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    .form-col-12 {
+      flex: 1 0 calc(100% - 20px);
+      /* Full width minus padding */
+    }
+
+    .form-col-6 {
+      flex: 1 0 calc(50% - 20px);
+      /* Half width minus padding */
+    }
+
+    .form-col-4 {
+      flex: 1 0 calc(33.333% - 20px);
+      /* One-third width minus padding */
+    }
+
+    /* Mobile view */
+    @media screen and (max-width: 768px) {
+      .form-col-12, .form-col-6, .form-col-4 {
+        flex: 1 0 calc(100% - 20px);
+        /* Full width minus padding on mobile */
+      }
+    }
+  }
+}

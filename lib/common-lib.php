@@ -27,10 +27,10 @@ function getUserInfo($username)
 }
 
 /**
- * Logs messages in the system with a specific level.
+ * Logs a message into a file if the DEBUG level is equal to or higher than $level.
  *
- * @param string $message The message to be logged.
- * @param string $level The level of the log entry.
+ * @param string $message The log message
+ * @param int $level The log level
  */
 function appLog($message, $level)
 {
@@ -38,15 +38,35 @@ function appLog($message, $level)
         $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
         $dateTime = date('Y-m-d H:i:s');
         $logMessage = "[{$dateTime}] [User: {$username}] [Log Level {$level}]: {$message}\n";
-        error_log($logMessage, 3, LOG_DIR . '/error.log');
+        error_log($logMessage, 3, '../storage/logs/error.log');
     }
 }
 
 /**
- * Increases failed login attempts from a particular IP.
- * If attempts are 3 or more, it marks the IP as blacklisted.
+ * This function is responsible for displaying error messages.
+ * It checks if there are any error messages stored in the session,
+ * then it prints the error message within a div container on the webpage.
+ * After that, it deletes the session error message to prevent it from
+ * being displayed again on the subsequent reloads/redirects.
+ */
+function display_error_msg()
+{
+    // Check if there is an error message set in the session
+    if (isset($_SESSION['error_msg'])) {
+
+        // If an error message exists in the session, outputs it inside a div with id 'error-msg'
+        echo '<div id="error-msg">' . $_SESSION['error_msg'] . '</div>';
+
+        // Unset the error message from the session, preventing it from being displayed again on page reload
+        unset($_SESSION['error_msg']);
+    }
+}
+
+
+/**
+ * Updates the number of failed attempts for an IP address. If failed attempts >= 3, blacklist the IP.
  *
- * @param string $ip The IP address to update.
+ * @param string $ip IP address to update failed attempts for
  */
 function update_failed_attempts($ip)
 {
@@ -58,21 +78,55 @@ function update_failed_attempts($ip)
         if ($content[$ip]['login_attempts'] >= 3) {
             $content[$ip]['blacklisted'] = true;
             $content[$ip]['timestamp'] = time();
+            $blacklistStatus = "true";
         }
     } else {
         $content[$ip] = ['login_attempts' => 1, 'blacklisted' => false, 'timestamp' => time()];
     }
 
     file_put_contents($blacklist_file, json_encode($content));
+    if ($blacklistStatus === "true") {
+        appLog("IP: " . $ip . " blacklisted due to suspicious activity", 1);
+        http_response_code(403);
+        die("Your IP address has been blacklisted. If you believe this is an error, please contact us.");
+    }
+}
+
+function update_invalid_activity($ip)
+{
+    $blacklist_file = BLACKLIST_DIR . "/BLACKLIST.json";
+    $content = json_decode(file_get_contents($blacklist_file), true);
+
+    if (isset($content[$ip])) {
+        $content[$ip]['strikes'] += 1;
+        if ($content[$ip]['strikes'] >= 3) {
+            $content[$ip]['blacklisted'] = true;
+            $content[$ip]['timestamp'] = time();
+            $blacklistStatus = "blacklisted";
+        }
+    } else {
+        $content[$ip] = ['strikes' => 1, 'blacklisted' => false, 'timestamp' => time()];
+        $blacklistStatus = "strike";
+    }
+    file_put_contents($blacklist_file, json_encode($content));
+    if ($blacklistStatus === "strike") {
+        appLog("Suspicious activity from IP: " . $ip, 1);
+        http_response_code(403);
+        die("INVALID ACTION: Your IP address has been logged.");
+    } elseif ($blacklistStatus === "blacklisted") {
+        appLog("IP: " . $ip . " blacklisted due to suspicious activity", 1);
+        http_response_code(403);
+        die("Your IP address has been blacklisted. If you believe this is an error, please contact us.");
+    }
 }
 
 /**
- * Checks if a given IP is blacklisted.
- * If IP was blacklisted more than 3 days ago, removes it from blacklists.
+ * Checks if an IP address is blacklisted. If blacklisted more than 3 days ago, unblacklist.
  *
- * @param string $ip The IP address to check.
- * @return bool True if the IP is blacklisted, otherwise false.
- */ function is_blacklisted($ip)
+ * @param string $ip IP address to check
+ * @return boolean Returns true if blacklisted, else false
+ */
+function is_blacklisted($ip)
 {
     $blacklist_file = BLACKLIST_DIR . "/BLACKLIST.json";
     $blacklist = json_decode(file_get_contents($blacklist_file), true);
@@ -104,7 +158,7 @@ function sanitizeInput($data)
 
 /**
  * Validates input values based on the input key.
- * Currently supports 'username', 'password', and 'admin'.
+ * Currently supports 'username', 'password', 'admin', 'domain', 'key' and 'id'.
  *
  * @param string $key The key of the input data.
  * @param mixed $value The value of the input data.
@@ -114,27 +168,45 @@ function validateInput($key, $value)
 {
     switch ($key) {
         case 'username':
-            // Perform username validation here
+            // Check if username only contains alphanumeric characters and underscores
             if (!preg_match("/^[a-zA-Z0-9_]+$/", $value)) {
                 return false;
             }
             break;
         case 'password':
-            // Perform password validation here
+            // Password must be at least 8 characters long
             if (strlen($value) < 8) {
                 return false;
             }
             break;
         case 'admin':
-            // Perform admin validation here
+            // Admin value must be either 'true' or 'false'
             if ($value !== 'true' && $value !== 'false') {
                 return false;
             }
             break;
-            // Add more cases for other fields as needed
+        case 'domain':
+            // Domain must follow the pattern: alphanumeric characters or hyphen followed by dot and again alphanumeric characters or hyphen
+            if (!preg_match("/^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/", $value)) {
+                return false;
+            }
+            break;
+        case 'key':
+            // Key must be 3 to 12 alphanumeric characters and special characters !, @, #, $
+            if (!preg_match("/^[a-zA-Z0-9!@#$]{3,12}$/", $value)) {
+                return false;
+            }
+            break;
+        case 'id':
+            // ID must be an integer
+            if (filter_var($value, FILTER_VALIDATE_INT) === false) {
+                return false;
+            }
+            break;
         default:
-            // Default validation or no validation, return the value
+            // If field is not specified, perform no validation and return value as it is
             return $value;
     }
+    // If all checks pass, return the original value
     return $value;
 }

@@ -12,61 +12,123 @@
  * and GET requests, includes corresponding action, and logs actions.
  */
 
-// Include the configuration and common library files
+// The session is being started or resumed.
+session_start();
+
+// Importing the configuration settings from the file 'config.php'.
 require_once '../config.php';
 require_once '../lib/common-lib.php';
 
-// If the client's IP is blacklisted, stop script and display error
+// Checking if the visitor's IP address is blacklisted.
 if (is_blacklisted(IP)) {
+    // If the visitor's IP address is blacklisted,
+    // HTTP response code 403 is returned and an error message is shown.
+    appLog("Blacklisted IP: " . $ip . "blocked", 1);
     http_response_code(403);
-    appLog("Blacklisted IP: " . IP . " attempted access", 1);
-    echo "Your IP address has been blacklisted. If you believe this is an error, please contact us.";
-    exit();
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) { // Handle POST requests
-    appLog("Received post action.", 2);
-    // Loop over POST data, sanitize and validate inputs, and replace incoming data with sanitized data
-    // Log validation failures
-    foreach ($_POST as $postvalue => $value) {
-        $sanitizedValue = sanitizeInput($value);
-        $validatedValue = validateInput($postvalue, $sanitizedValue);
-        if ($validatedValue === false) {
-            appLog("Validation failed for $postvalue.", 2);
-            $error_msg = "Validation failed for $postvalue.";
-        }
-        $_POST[$postvalue] = $validatedValue;
-    }
-    // If an action file corresponding to the action is found, include it
-    // Else, stop script
-    $action = $_POST['action'];
-    $path = POST_ACTION . "$action.php";
-    if (!empty($action) && file_exists($path)) {
-        include $path;
-    } else {
-        // Suspicious activity from IP
-        update_failed_attempts(IP);
-        appLog("Suspicious activity from IP: " . IP . "POST request to nonexisting $action.", 1);
-        exit;
-    }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) { // Handle GET requests
-    appLog("Received post action.", 2);
-    // Sanitize GET data
-    foreach ($_GET as $getvalue => $value) {
-        $_GET[$getvalue] = sanitizeInput($value);
-    }
-    // If an action file corresponding to the action is found, include it
-    // Else, stop script
-    $action = $_GET['action'];
-    $path = GET_ACTION . "$action.php";
-    if (!empty($action) && file_exists($path)) {
-        include $path;
-    } else {
-        // Suspicious activity from IP
-        update_failed_attempts(IP);
-        appLog("Suspicious activity from IP: " . IP . "GET request to nonexisting $action.", 1);
-        exit;
-    }
+    die("Your IP address has been blacklisted. If you believe this is an error, please contact us.");
 } else {
-    // Stop script if the request is not a POST or GET request with an 'action' parameter
-    appLog("Attempted direct access to actions.php.", 1);
-    exit;
+    // Parse URL to get the actionType from the path
+    $parsedUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $components = explode('/', str_replace('/actions/', '', $parsedUrl));
+
+    if ((isset($_GET['action']) || isset($_POST['action'])) && count($components) === 1 && !empty($components[0])) {
+        $actionType = $components[0];
+        $action = isset($_GET['action']) ? $_GET['action'] : $_POST['action'];
+
+        switch ($actionType) {
+            case 'api':
+                // Validate and require API action
+                $filePath = ACTIONS_DIR . "/api/{$action}.php";
+                if (($_SERVER['REQUEST_METHOD'] === 'GET') && file_exists($filePath)) {
+                    foreach ($_GET as $getvalue => $value) {
+                        $_GET[$getvalue] = validateInput($getvalue, sanitizeInput($value));  // Changed $postvalue to $getvalue
+                        if ($_GET[$getvalue] === false) {
+                            $_SESSION['error_msg'] = "Validation failed for Input.";
+                            header('Location: ' . $_SERVER['HTTP_REFERER']);
+                            exit();
+                        }
+                    }
+                    require_once($filePath);
+                } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && file_exists($filePath)) {
+                    foreach ($_POST as $postvalue => $value) {
+                        $_POST[$postvalue] = validateInput($postvalue, sanitizeInput($value));
+                        if ($_POST[$postvalue] === false) {
+                            $_SESSION['error_msg'] = "Validation failed for Input.";
+                            header('Location: ' . $_SERVER['HTTP_REFERER']); // Redirects back to the previous page
+                            exit(); // Stops the script
+                        }
+                    }
+                    require_once($filePath);
+                } else {
+                    // Log Suspicious activity and update failed attempts
+                    update_invalid_activity(IP);
+                }
+                break;
+
+            case 'auth':
+                // Validate and require Auth action
+                $filePath = ACTIONS_DIR . "/auth/{$action}.php";
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && file_exists($filePath)) {
+                    foreach ($_POST as $postvalue => $value) {
+                        $_POST[$postvalue] = validateInput($postvalue, sanitizeInput($value));
+                        if ($_POST[$postvalue] === false) {
+                            $_SESSION['error_msg'] = "Validation failed for Input.";
+                            header('Location: ' . $_SERVER['HTTP_REFERER']); // Redirects back to the previous page
+                            exit(); // Stops the script
+                        }
+                    }
+                    require_once($filePath);
+                } else {
+                    // Log Suspicious activity and update failed attempts
+                    update_invalid_activity(IP);
+                }
+                break;
+
+            case 'post':
+                // Validate and require POST action
+                $filePath = ACTIONS_DIR . "/post/{$action}.php";
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
+                    foreach ($_POST as $postvalue => $value) {
+                        $_POST[$postvalue] = validateInput($postvalue, sanitizeInput($value));
+                        if ($_POST[$postvalue] === false) {
+                            $_SESSION['error_msg'] = "Validation failed for Input.";
+                            header('Location: ' . $_SERVER['HTTP_REFERER']); // Redirects back to the previous page
+                            exit(); // Stops the script
+                        }
+                    }
+                    require_once($filePath);
+                } else {
+                    // Log Suspicious activity and update failed attempts
+                    update_invalid_activity(IP);
+                }
+                break;
+
+            case 'get':
+                // Validate and require GET action
+                $filePath = ACTIONS_DIR . "/get/{$action}.php";
+                if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
+                    foreach ($_GET as $getvalue => $value) {
+                        $_GET[$getvalue] = validateInput($getvalue, sanitizeInput($value));  // Changed $postvalue to $getvalue
+                        if ($_GET[$getvalue] === false) {
+                            $_SESSION['error_msg'] = "Validation failed for Input.";
+                            header('Location: ' . $_SERVER['HTTP_REFERER']);
+                            exit();
+                        }
+                    }
+                    require_once($filePath);
+                } else {
+                    // Log Suspicious activity and update failed attempts
+                    update_invalid_activity(IP);
+                }
+                break;
+
+            default:
+                // Log Suspicious activity and update failed attempts
+                update_invalid_activity(IP);
+                break;
+        }
+    } else {
+        // Log Suspicious activity and update failed attempts if 'action' is not set
+        update_invalid_activity($_SERVER['REMOTE_ADDR']);
+    }
 }

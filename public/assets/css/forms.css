@@ -1,0 +1,108 @@
+/* Base styles for form elements */
+input[type="radio"],
+input[type="checkbox"] {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    border: 1px solid #66cc33;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    border: 1px solid #66cc33;
+    padding: 5px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="image"] {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    border: 1px solid #66cc33;
+}
+
+input[type="date"] {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    border: 1px solid #66cc33;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    /* Drop shadow */
+    border: 1px solid #66cc33;
+    /* Border color */
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+select>option {
+    padding: 5px;
+    /* Additional padding for options */
+    background-color: #f9fff9;
+    /* Very light green background to match the border color of the select */
+}
+
+/* Labels */
+form>label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+
+/* Additional adjustments for disabled elements */
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+:required {
+    background-color: #f0f8ff;
+    /* Very light blue background for required fields */
+}
+
+/* Custom styling for different input types or states */
+input[type="submit"],
+input[type="button"],
+button {
+    background-color: #0366d6;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    padding: 8px 20px;
+    margin: 5px 0;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.3s;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover {
+    opacity: 0.9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Green variant */
+.green {
+    background-color: #66cc33;
+}
+
+/* Red variant */
+.red {
+    background-color: #f44336;
+}
+
+/* Orange variant */
+.orange {
+    background-color: #ff9800;
+}

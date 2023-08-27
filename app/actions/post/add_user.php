@@ -12,10 +12,9 @@
  * completed. If so, it adds the user information to the system, logging any errors or
  * successful entries.
  */
-session_start();  // Start or resume a session
 
 // Check if user is logged in with administrative privileges
-if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) {
+if ($_SESSION['admin'] === true) {
        $username = ($_POST["username"]);
        $password = ($_POST["password"]);
        $email = ($_POST["email"]);
@@ -50,8 +49,6 @@ if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) {
            appLog("Failed to add user info. All fields are required.", 2);
        }
 } else {
-    // If user is not an admin or not logged in, log the unauthorized access and exit
-    update_failed_attempts(IP);
-    appLog("Unauthorized access to add user from IP: " . IP, 1);
-    exit();
+    // Log Suspicious activity and update failed attempts
+    update_invalid_activity(IP);
 }

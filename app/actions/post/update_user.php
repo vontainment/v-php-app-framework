@@ -10,9 +10,7 @@
  * of the user's password and finally calls a function to update the user's information in the database.
 */
 
-session_start(); // Starting or resuming a session
-
-if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) { // Verify if user is logged in and has admin rights
+if ($_SESSION['admin'] === true) { // Verify if user is logged in and has admin rights
     $username = ($_POST["username"]); // Sanitizing the input username
     $password = ($_POST["password"]); // Sanitizing the input password
     $email = ($_POST["email"]); // Sanitizing the input email
@@ -42,7 +40,6 @@ if ($_SESSION['logged_in'] === true && $_SESSION['admin'] === true) { // Verify 
         appLog("Failed to update user info.", 2);
     }
 } else {
-    update_failed_attempts(IP);
-    appLog("Unauthorized access to update user from IP: " . IP, 1);
-    exit();
+    // Log Suspicious activity and update failed attempts
+    update_invalid_activity(IP);
 }
