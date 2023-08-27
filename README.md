@@ -8,10 +8,9 @@ The idea is to split the code into Core logic and functions (libs), page renderi
 
 ### App (Contains core code)
 
-- actions (Directs form input)
-  - post (Contains `$action.php` file; post `$action` to direct)
-  - get (Contains `$action.php` file; get `$action` to direct)
-- api (Directs API requests)
+- actions (Directs form and api input)
+  - api (Contains `action.php` file; get `$action` to direct)
+  - auth (Contains `$action.php` file; get `$action` to direct)
   - post (Contains `$action.php` file; post `$action` to direct)
   - get (Contains `$action.php` file; get `$action` to direct)
 - views (Contains the page rendering views)
@@ -43,54 +42,27 @@ The idea is to split the code into Core logic and functions (libs), page renderi
 
 ## How To
 
+- 404 Errors
+Create a file /lib/404-lib.php
+
 - Forms:
 
 ```
-<form action="/action.php" method="POST">
+<form action="/action/post" method="POST">
+    <input type="hidden" name="action" value="addsomething">
+```
+
+```
+<form action="/action/get" method="GET">
+    <input type="hidden" name="action" value="getinfo">
+```
+
+```
+<form action="/action/auth" method="POST">
     <input type="hidden" name="action" value="login">
 ```
 
-This routes the form submission to /app/actions/post/login.php, actions.php handles basic sanitization and validation.
-
-- Logging:
-  Logging can be defined as debug or production in config.php, 1 is production, 2 is debug.
-
-```
-appLog("Attempted direct access to actions.php.", 1);
-```
-
-or
-
-```
-appLog("Attempted direct access to actions.php.", 2);
-```
-
-- Error Messages:
-  Display:
-
-```
-<?php if (isset($error_msg)) : ?>
-    <div id="error-msg"><?php echo $error_msg; ?></div>
-<?php endif; ?>
-```
-
-or create:
-
-```
-$error_msg = 'Failed to update user info. Please try again.';
-```
-
-- Blacklisting IPs
-  IPs get 3 strokes and then are blacklisted. To give an IP a strike:
-
-```
-update_failed_attempts(IP);
-appLog("Unauthorized access to update user from IP: " . IP, 1);
-exit();
-```
-
-- 404 Errors
-Create a file /lib/404-lib.php
+This routes the form submission to /app/actions/auth/login.php. Also actions.php handles basic sanitization and validation. /actions/api can do both GET and POST.
 
 - Automatic sanitization and validation on POST and sanitization on GET requests:
   These are very basic and just prevent the general issues. The sanitization should stript out most dangerous input but should not cause issues with most usages.
@@ -146,7 +118,7 @@ Its controlled in action.php with this code:
         $validatedValue = validateInput($postvalue, $sanitizedValue);
         if ($validatedValue === false) {
             appLog("Validation failed for $postvalue.", 2);
-            $error_msg = "Validation failed for $postvalue.";
+            $_SESSION['error_msg'] = "Validation failed for $postvalue.";
         }
         $_POST[$postvalue] = $validatedValue;
     }
@@ -159,3 +131,78 @@ and
         $_GET[$getvalue] = sanitizeInput($value);
     }
 ```
+
+- Logging:
+Logging can be defined as debug or production in config.php, 1 is production, 2 is debug.
+
+```
+appLog("Attempted direct access to actions.php.", 1);
+```
+
+or
+
+```
+appLog("Attempted direct access to actions.php.", 2);
+```
+
+- Error Messages:
+Display:
+
+```
+<?php display_error_msg(); ?>
+```
+
+or create:
+
+```
+       // Sets the success message in the session with details of the updated entry
+       $_SESSION['error_msg'] = "Updated entry: $domain, $key";
+       // Logs the update process
+       appLog("Updated entry: $domain, $key", 2);
+       // Redirects to home
+       header('Location: /home');
+       // Complete script execution
+       exit();
+```
+
+- Blacklisting IPs
+IPs get 3 strokes and then are blacklisted. To give an IP a strike:
+
+```
+update_failed_attempts(IP);
+appLog("Unauthorized access to update user from IP: " . IP, 1);
+exit();
+```
+
+failed_attempts does:
+
+```
+if ($blacklistStatus === "true") {
+    appLog("IP: " . $ip . " blacklisted due to suspicious activity", 1);
+    http_response_code(403);
+    die("Your IP address has been blacklisted. If you believe this is an error, please contact us.");
+}
+```
+
+or
+
+```
+// Log Suspicious activity and update failed attempts
+update_invalid_activity(IP);
+```
+
+invalid_activity does:
+
+```
+if ($blacklistStatus === "strike") {
+    appLog("Suspicious activity from IP: " . $ip, 1);
+    http_response_code(403);
+    die("INVALID ACTION: Your IP address has been logged.");
+} elseif ($blacklistStatus === "blacklisted") {
+    appLog("IP: " . $ip . " blacklisted due to suspicious activity", 1);
+    http_response_code(403);
+    die("Your IP address has been blacklisted. If you believe this is an error, please contact us.");
+}
+```
+
+update_failed_attempts(IP); is more for logins, update_invalid_activity(IP); is better used for situations where it is triggered if people are doing things they should not.
