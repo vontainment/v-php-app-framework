@@ -62,7 +62,7 @@ Create a file /lib/404-lib.php
     <input type="hidden" name="action" value="login">
 ```
 
-This routes the form submission to /app/actions/auth/login.php. Also actions.php handles basic sanitization and validation. /actions/api can do both GET and POST.
+This routes the form submission to /app/actions/auth/login.php. Also actions.php handles basic sanitization and validation. /actions/api can do both GET and POST. Post and Get require ($_SESSION['logged_in'] === true && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])). Auth and API do not.
 
 - Automatic sanitization and validation on POST and sanitization on GET requests:
   These are very basic and just prevent the general issues. The sanitization should stript out most dangerous input but should not cause issues with most usages.

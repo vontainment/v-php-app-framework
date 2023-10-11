@@ -14,6 +14,15 @@
 // Start output buffering
 ob_start();
 
+session_set_cookie_params([
+    'lifetime' => 3600, // 1 hour
+    'path' => '/',
+    'domain' => 'DOMAIN',
+    'secure' => true, // requires HTTPS
+    'httponly' => true, // inaccessible to JavaScript
+    'samesite' => 'Strict' // strict same-site policy
+]);
+
 // Starts a new session or resume the existing one
 session_start();
 
@@ -31,7 +40,7 @@ require_once '../app/templates/header.php';
 
 // Includes whichever PHP file is set inside the $pageOutput variable.
 // The included file will dictate what content is displayed on the webpage.
-require_once $pageOutput;
+require_once $viewOutput;
 
 // Includes footer.php, containing the output for the footer portion of the page
 require_once '../app/templates/footer.php';

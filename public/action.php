@@ -87,7 +87,7 @@ if (is_blacklisted(IP)) {
             case 'post':
                 // Validate and require POST action
                 $filePath = ACTIONS_DIR . "/post/{$action}.php";
-                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
                     foreach ($_POST as $postvalue => $value) {
                         $_POST[$postvalue] = validateInput($postvalue, sanitizeInput($value));
                         if ($_POST[$postvalue] === false) {
@@ -106,7 +106,7 @@ if (is_blacklisted(IP)) {
             case 'get':
                 // Validate and require GET action
                 $filePath = ACTIONS_DIR . "/get/{$action}.php";
-                if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
+                if ($_SERVER['REQUEST_METHOD'] === 'GET' && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']) && $_SESSION['loggedIn'] === true && file_exists($filePath)) {
                     foreach ($_GET as $getvalue => $value) {
                         $_GET[$getvalue] = validateInput($getvalue, sanitizeInput($value));  // Changed $postvalue to $getvalue
                         if ($_GET[$getvalue] === false) {

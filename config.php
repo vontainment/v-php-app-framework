@@ -13,6 +13,9 @@
 // Define the client's IP address.
 define('IP', $_SERVER['REMOTE_ADDR']);
 
+// Define apps domain name
+define('DOMAIN', 'localhost');
+
 // Define the base directory of the project.
 define('BASE_DIR', dirname($_SERVER['DOCUMENT_ROOT']));
 
